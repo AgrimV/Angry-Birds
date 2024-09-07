@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,6 +27,7 @@ public class Slingshot : MonoBehaviour
     [SerializeField] SlingshotArea _slingshotArea;
     [SerializeField] float _birdOffset = 0.2f;
     [SerializeField] float _slingForce = 10.0f;
+    [SerializeField] float _slerpSpeed = 0.2f;
 
     Vector3 _clampedPosition;
     Queue<GameObject> _spawnedQueue;
@@ -33,6 +35,7 @@ public class Slingshot : MonoBehaviour
     bool _wasClickedWithinCollider;
     Vector2 _direction;
     int _spawnCount;
+    bool _slingShotPrimed = false;
 
     private void Awake()
     {
@@ -49,23 +52,48 @@ public class Slingshot : MonoBehaviour
     {
         for (int i = 0; i < _spawnCount; i++)
         {
-            if (i == 0)
-            {
-                _activeBird = Instantiate(_birdPrefab, _centreSlingShot.position, Quaternion.identity);
-                continue;
-            }
-
             _spawnedQueue.Enqueue(Instantiate(_birdPrefab, new Vector3(_spawnPosition.position.x - ((i - 1) * _spawnSpacing), _spawnPosition.position.y, 0f), Quaternion.identity));
         }
 
-        // move to activate bird
+        NextBird();
+    }
+
+    void NextBird()
+    {
+        if (_activeBird != null)
+        {
+            Destroy(_activeBird);
+        }
+
+        _activeBird = _spawnedQueue.Dequeue();
+
         _activeBird.GetComponent<Renderer>().sortingOrder += 1;
         _activeBird.GetComponent<Rigidbody2D>().isKinematic = true;
+
+        StartCoroutine(MoveBirdToSlingShot());
+    }
+
+    IEnumerator MoveBirdToSlingShot()
+    {
+        while (Vector2.Distance(_activeBird.transform.position, _centreSlingShot.position) > _slerpSpeed)
+        {
+            _activeBird.transform.position = Vector2.MoveTowards(_activeBird.transform.position, _centreSlingShot.position, _slerpSpeed);
+            yield return null;
+        }
+
+        _activeBird.transform.position = _centreSlingShot.position;
+        _slingShotPrimed = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.instance.BringNextBird)
+        {
+            GameManager.instance.BringNextBird = false;
+            NextBird();
+        }
+
         if (!_bgSlingshot.enabled)
         {
             _bgSlingshot.enabled = true;
@@ -76,27 +104,34 @@ public class Slingshot : MonoBehaviour
             _fgSlingshot.enabled = true;
         }
 
+        if (_slingShotPrimed)
+        {
 
-        if (Mouse.current.leftButton.wasPressedThisFrame && _slingshotArea.IsWithinCollider())
-        {
-            _wasClickedWithinCollider = true;
+            if (Mouse.current.leftButton.wasPressedThisFrame && _slingshotArea.IsWithinCollider())
+            {
+                _wasClickedWithinCollider = true;
+            }
+
+            if (Mouse.current.leftButton.isPressed && _wasClickedWithinCollider)
+            {
+                PullSlingshot();
+                PullBird();
+            }
+            else
+            {
+                ResetSlingshot();
+            }
+
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
+            {
+                _slingShotPrimed = false;
+                _wasClickedWithinCollider = false;
+                _activeBird.GetComponent<Bird>().Launch(_direction, _slingForce);
+
+                GameManager.instance.AvailableBirds--;
+            }
         }
 
-        if (Mouse.current.leftButton.isPressed && _wasClickedWithinCollider)
-        {
-            PullSlingshot();
-            PullBird();
-        }
-        else
-        {
-            ResetSlingshot();
-        }
-
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
-        {
-            _wasClickedWithinCollider = false;
-            _activeBird.GetComponent<Bird>().Launch(_direction, _slingForce);
-        }
     }
 
     void PullSlingshot()
@@ -133,6 +168,4 @@ public class Slingshot : MonoBehaviour
     {
         _activeBird.transform.position = _centreSlingShot.position;
     }
-
-
 }

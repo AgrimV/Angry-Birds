@@ -8,6 +8,10 @@ public class GameManager : MonoBehaviour
 
     public int BirdCount = 3;
 
+    public int AvailableBirds = 3;
+
+    public bool BringNextBird = false;
+
     void Awake()
     {
         if (instance == null)

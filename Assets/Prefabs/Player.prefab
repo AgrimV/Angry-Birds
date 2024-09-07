@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 633195443144166605}
   - component: {fileID: 285376487471233428}
   - component: {fileID: 471392048628607978}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,3 +162,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rb: {fileID: 285376487471233428}
+  _liveTimeAfterCollision: 3

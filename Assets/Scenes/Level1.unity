@@ -268,6 +268,52 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &379602159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 379602161}
+  - component: {fileID: 379602160}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &379602160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379602159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e47436d1227de354d821d21818cfac7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BirdCount: 3
+  NextBird: 0
+--- !u!4 &379602161
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379602159}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.1737304, y: 0.28991348, z: 0.4682095}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &440354029
 GameObject:
   m_ObjectHideFlags: 0
@@ -1244,7 +1290,8 @@ MonoBehaviour:
   _maxDistance: 4
   _spawnSpacing: 1.2
   _slingshotArea: {fileID: 831474824}
-  spawnCount: 3
+  _birdOffset: 0.45
+  _slingForce: 10
 --- !u!1 &1093408421
 GameObject:
   m_ObjectHideFlags: 0
@@ -1893,3 +1940,4 @@ SceneRoots:
   - {fileID: 1403811407}
   - {fileID: 1154009422}
   - {fileID: 99608165}
+  - {fileID: 379602161}

@@ -5,19 +5,20 @@ using UnityEngine;
 public class Bird : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _rb;
+    [SerializeField] private float _liveTimeAfterCollision;
 
     private bool _isFlying = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void FixedUpdate()
@@ -37,6 +38,20 @@ public class Bird : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        _isFlying = false;
+        if (_isFlying)
+        {
+            _isFlying = false;
+            StartCoroutine(DestroyBirdAfterCollision());
+        }
+    }
+
+    IEnumerator DestroyBirdAfterCollision()
+    {
+        yield return new WaitForSeconds(_liveTimeAfterCollision);
+
+        if (GameManager.instance.AvailableBirds > 0)
+        {
+            GameManager.instance.BringNextBird = true;
+        }
     }
 }
