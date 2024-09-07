@@ -1,0 +1,76 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "GameControls",
+            "id": "2a62e488-c0c9-4362-aa68-1c5f1ae0fefd",
+            "actions": [
+                {
+                    "name": "InputPosition",
+                    "type": "PassThrough",
+                    "id": "25d63971-46f3-4846-8705-3617510e53aa",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Input",
+                    "type": "PassThrough",
+                    "id": "83d07198-6cba-4009-8525-0a806b17e293",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "859ff176-4f14-4f54-b434-cb0aeea04578",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InputPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e489092d-cd63-46c3-b529-4a787351e894",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InputPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d577c7f8-fd03-4d7e-97cd-d820319cf070",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Input",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "91a88bfe-8652-4960-8792-0c8621abfdcf",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Input",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

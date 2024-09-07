@@ -1,9 +1,7 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Slingshot : MonoBehaviour
 {
@@ -17,17 +15,25 @@ public class Slingshot : MonoBehaviour
     [SerializeField] Transform _centreSlingShot;
     [SerializeField] Transform _idleSlingshot;
 
+    [Header("Camera")]
+    [SerializeField] CameraManager _cameraManager;
+
     [Header("Bird")]
     [SerializeField] GameObject _birdPrefab;
     [SerializeField] Transform _spawnPosition;
 
+    [Header("Sounds")]
+    [SerializeField] AudioClip _pullSound;
+    [SerializeField] AudioClip _releaseSound;
+    [SerializeField] AudioSource _audioSource;
+
     [Header("Variables")]
+    [SerializeField] SlingshotArea _slingshotArea;
     [SerializeField] float _maxDistance = 2.0f;
     [SerializeField] float _spawnSpacing = 1.0f;
-    [SerializeField] SlingshotArea _slingshotArea;
     [SerializeField] float _birdOffset = 0.2f;
     [SerializeField] float _slingForce = 10.0f;
-    [SerializeField] float _slerpSpeed = 0.2f;
+    [SerializeField] float _primeSpeed = 0.2f;
 
     Vector3 _clampedPosition;
     Queue<GameObject> _spawnedQueue;
@@ -37,6 +43,8 @@ public class Slingshot : MonoBehaviour
     int _spawnCount;
     bool _slingShotPrimed = false;
 
+    Controls _gameControls;
+
     private void Awake()
     {
         _fgSlingshot.enabled = false;
@@ -45,6 +53,20 @@ public class Slingshot : MonoBehaviour
         _spawnCount = GameManager.instance.BirdCount;
 
         _spawnedQueue = new Queue<GameObject>();
+
+        _gameControls = new Controls();
+
+        _audioSource = GetComponent<AudioSource>();
+    }
+
+    private void OnEnable()
+    {
+        _gameControls.GameControls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _gameControls.GameControls.Disable();
     }
 
     // Start is called before the first frame update
@@ -60,9 +82,10 @@ public class Slingshot : MonoBehaviour
 
     void NextBird()
     {
+
         if (_activeBird != null)
         {
-            Destroy(_activeBird);
+            _activeBird.GetComponent<Bird>().Despawn();
         }
 
         _activeBird = _spawnedQueue.Dequeue();
@@ -70,24 +93,38 @@ public class Slingshot : MonoBehaviour
         _activeBird.GetComponent<Renderer>().sortingOrder += 1;
         _activeBird.GetComponent<Rigidbody2D>().isKinematic = true;
 
-        StartCoroutine(MoveBirdToSlingShot());
+        float distance = Vector2.Distance(_activeBird.transform.position, _centreSlingShot.position);
+        float time = distance / _primeSpeed;
+
+        _activeBird.transform.DOMove(_centreSlingShot.position, time).SetEase(Ease.Linear);
+
+        StartCoroutine(MoveBirdToSlingShot(_activeBird, time));
     }
 
-    IEnumerator MoveBirdToSlingShot()
+    IEnumerator MoveBirdToSlingShot(GameObject bird, float time)
     {
-        while (Vector2.Distance(_activeBird.transform.position, _centreSlingShot.position) > _slerpSpeed)
+        float elapsedTime = 0f;
+
+        while (elapsedTime < time)
         {
-            _activeBird.transform.position = Vector2.MoveTowards(_activeBird.transform.position, _centreSlingShot.position, _slerpSpeed);
+            _activeBird.transform.position = bird.transform.position;
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         _activeBird.transform.position = _centreSlingShot.position;
         _slingShotPrimed = true;
+        _cameraManager.SwitchToIdleCam();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.instance.GamePaused)
+        {
+            return;
+        }
+
         if (GameManager.instance.BringNextBird)
         {
             GameManager.instance.BringNextBird = false;
@@ -107,12 +144,14 @@ public class Slingshot : MonoBehaviour
         if (_slingShotPrimed)
         {
 
-            if (Mouse.current.leftButton.wasPressedThisFrame && _slingshotArea.IsWithinCollider())
+            if (InputManager.WasPressedThisFrame && _slingshotArea.IsWithinCollider())
             {
+                _cameraManager.SwitchToFollowCam(_activeBird.transform);
+                SoundManager.instance.PlayClip(_pullSound, _audioSource);
                 _wasClickedWithinCollider = true;
             }
 
-            if (Mouse.current.leftButton.isPressed && _wasClickedWithinCollider)
+            if (InputManager.IsPressed && _wasClickedWithinCollider)
             {
                 PullSlingshot();
                 PullBird();
@@ -122,13 +161,14 @@ public class Slingshot : MonoBehaviour
                 ResetSlingshot();
             }
 
-            if (Mouse.current.leftButton.wasReleasedThisFrame)
+            if (InputManager.WasReleasedThisFrame && _wasClickedWithinCollider)
             {
                 _slingShotPrimed = false;
                 _wasClickedWithinCollider = false;
+                SoundManager.instance.PlayClip(_releaseSound, _audioSource);
                 _activeBird.GetComponent<Bird>().Launch(_direction, _slingForce);
 
-                GameManager.instance.AvailableBirds--;
+                GameManager.instance.BirdsFired();
             }
         }
 
@@ -136,8 +176,9 @@ public class Slingshot : MonoBehaviour
 
     void PullSlingshot()
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Debug.Log(Camera.main.name);
 
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(InputManager.MousePosition);
         _clampedPosition = _centreSlingShot.position + Vector3.ClampMagnitude(mousePosition - _centreSlingShot.position, _maxDistance);
 
         _bgSlingshot.SetPosition(0, _bgSlingshotStart.position);

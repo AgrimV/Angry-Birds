@@ -7,18 +7,14 @@ public class Bird : MonoBehaviour
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private float _liveTimeAfterCollision;
 
+    [SerializeField] AudioClip _despawnSound;
+    [SerializeField] AudioSource _source;
+
     private bool _isFlying = false;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        _source = GetComponent<AudioSource>();
     }
 
     private void FixedUpdate()
@@ -34,6 +30,12 @@ public class Bird : MonoBehaviour
         _isFlying = true;
         _rb.isKinematic = false;
         _rb.AddForce(direction * force, ForceMode2D.Impulse);
+    }
+
+    public void Despawn()
+    {
+        SoundManager.instance.PlayAtPoint(_despawnSound, gameObject.transform.position);
+        Destroy(gameObject);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
