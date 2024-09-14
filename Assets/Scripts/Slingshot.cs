@@ -146,7 +146,6 @@ public class Slingshot : MonoBehaviour
 
             if (InputManager.WasPressedThisFrame && _slingshotArea.IsWithinCollider())
             {
-                _cameraManager.SwitchToFollowCam(_activeBird.transform);
                 SoundManager.instance.PlayClip(_pullSound, _audioSource);
                 _wasClickedWithinCollider = true;
             }
@@ -163,6 +162,7 @@ public class Slingshot : MonoBehaviour
 
             if (InputManager.WasReleasedThisFrame && _wasClickedWithinCollider)
             {
+                _cameraManager.SwitchToFollowCam(_activeBird.transform);
                 _slingShotPrimed = false;
                 _wasClickedWithinCollider = false;
                 SoundManager.instance.PlayClip(_releaseSound, _audioSource);
@@ -176,17 +176,15 @@ public class Slingshot : MonoBehaviour
 
     void PullSlingshot()
     {
-        Debug.Log(Camera.main.name);
-
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(InputManager.MousePosition);
-        _clampedPosition = _centreSlingShot.position + Vector3.ClampMagnitude(mousePosition - _centreSlingShot.position, _maxDistance);
+
+        _clampedPosition = _centreSlingShot.position + (Vector3)Vector2.ClampMagnitude(mousePosition - _centreSlingShot.position, _maxDistance);
 
         _bgSlingshot.SetPosition(0, _bgSlingshotStart.position);
         _bgSlingshot.SetPosition(1, _clampedPosition);
 
         _fgSlingshot.SetPosition(0, _fgSlingshotStart.position);
         _fgSlingshot.SetPosition(1, _clampedPosition);
-
         _direction = _centreSlingShot.position - _clampedPosition;
     }
 
@@ -201,7 +199,7 @@ public class Slingshot : MonoBehaviour
 
     void PullBird()
     {
-        _activeBird.transform.position = (Vector2)_clampedPosition + (_direction.normalized * _birdOffset);
+        _activeBird.transform.position = (Vector2)_fgSlingshot.GetPosition(1) + (_direction.normalized * _birdOffset);
         _activeBird.transform.right = _direction.normalized;
     }
 
