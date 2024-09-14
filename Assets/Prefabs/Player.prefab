@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.89, y: -0.914, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1531314657, guid: e3085b2e1c6f6ca4698119a2a8f23873, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9bb841ed13a1f634e8bbc31789d9db50, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -119,9 +119,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.024443507, y: -0.032149374}
+  m_Offset: {x: 0.0057013035, y: -0.004036188}
   serializedVersion: 2
-  m_Radius: 0.46042752
+  m_Radius: 0.9321034
 --- !u!50 &285376487471233428
 Rigidbody2D:
   serializedVersion: 4
@@ -165,3 +165,7 @@ MonoBehaviour:
   _liveTimeAfterCollision: 3
   _despawnSound: {fileID: 8300000, guid: b9812afd49a182e438ea249a12bd3440, type: 3}
   _source: {fileID: 0}
+  _sprites:
+  - {fileID: 21300000, guid: 9bb841ed13a1f634e8bbc31789d9db50, type: 3}
+  - {fileID: 21300000, guid: 8367ee7d97f80cf49bb80e8e51a5c3da, type: 3}
+  - {fileID: 21300000, guid: 62fc9ecdc8262b24d9bca6eaf977f98f, type: 3}

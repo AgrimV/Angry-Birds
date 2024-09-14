@@ -10,11 +10,16 @@ public class Bird : MonoBehaviour
     [SerializeField] AudioClip _despawnSound;
     [SerializeField] AudioSource _source;
 
+    [SerializeField] List<Sprite> _sprites = new();
+
     private bool _isFlying = false;
 
     private void Awake()
     {
         _source = GetComponent<AudioSource>();
+
+        int randomIndex = Random.Range(0, _sprites.Count);
+        GetComponent<SpriteRenderer>().sprite = _sprites[randomIndex];
     }
 
     private void FixedUpdate()
