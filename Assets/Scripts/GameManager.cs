@@ -23,6 +23,11 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        if (SceneManager.GetActiveScene().buildIndex == SceneManager.sceneCountInBuildSettings - 1)
+        {
+            _victoryScreen.transform.GetChild(3).gameObject.SetActive(false);
+        }
+
         if (instance == null)
         {
             instance = this;
@@ -111,5 +116,10 @@ public class GameManager : MonoBehaviour
     public void ReturnToMenu()
     {
         SceneManager.LoadScene("Menu");
+    }
+
+    public void LoadNextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }
