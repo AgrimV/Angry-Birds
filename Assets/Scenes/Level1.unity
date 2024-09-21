@@ -1000,7 +1000,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e47436d1227de354d821d21818cfac7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _actOfGodTime: 4
+  _actOfGodTime: 5
   _victoryScreen: {fileID: 1961157408}
   _inGameMenu: {fileID: 675285671}
   _pauseMenu: {fileID: 103748281}
@@ -1247,7 +1247,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0000014305115, y: 0.13715696, z: -1}
+  m_LocalPosition: {x: 0, y: 0.15, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

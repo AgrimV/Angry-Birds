@@ -42,6 +42,7 @@ public class Slingshot : MonoBehaviour
     Vector2 _direction;
     int _spawnCount;
     bool _slingShotPrimed = false;
+    bool _signatureAvailable = false;
 
     Controls _gameControls;
 
@@ -143,7 +144,6 @@ public class Slingshot : MonoBehaviour
 
         if (_slingShotPrimed)
         {
-
             if (InputManager.WasPressedThisFrame && _slingshotArea.IsWithinCollider())
             {
                 SoundManager.instance.PlayClip(_pullSound, _audioSource);
@@ -167,8 +167,17 @@ public class Slingshot : MonoBehaviour
                 _wasClickedWithinCollider = false;
                 SoundManager.instance.PlayClip(_releaseSound, _audioSource);
                 _activeBird.GetComponent<Bird>().Launch(_direction, _slingForce);
+                _signatureAvailable = true;
 
                 GameManager.instance.BirdsFired();
+            }
+        }
+        else
+        {
+            if (_activeBird.GetComponent<Bird>().IsFlying && _signatureAvailable && InputManager.WasPressedThisFrame)
+            {
+                _activeBird.GetComponent<Bird>().Signature();
+                _signatureAvailable = false;
             }
         }
 
@@ -206,5 +215,10 @@ public class Slingshot : MonoBehaviour
     void ResetBird()
     {
         _activeBird.transform.position = _centreSlingShot.position;
+    }
+
+    public bool IsPrimed()
+    {
+        return _slingShotPrimed;
     }
 }

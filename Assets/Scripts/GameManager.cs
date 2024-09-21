@@ -7,10 +7,12 @@ using DG.Tweening;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] float _actOfGodTime = 4f;
+    [SerializeField] float _stampedeForce = 10f;
     [SerializeField] GameObject _victoryScreen;
     [SerializeField] GameObject _inGameMenu;
     [SerializeField] GameObject _pauseMenu;
     [SerializeField] Slingshot _slingshot;
+    [SerializeField] GameObject _stampede;
 
     public static GameManager instance;
 
@@ -121,5 +123,17 @@ public class GameManager : MonoBehaviour
     public void LoadNextLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    public void StampedeRush()
+    {
+        if (!_slingshot.IsPrimed())
+        {
+            return;
+        }
+
+        _inGameMenu.transform.GetChild(0).gameObject.SetActive(false);
+
+        _stampede.GetComponent<Rigidbody2D>().velocity = _stampede.transform.right * _stampedeForce;
     }
 }

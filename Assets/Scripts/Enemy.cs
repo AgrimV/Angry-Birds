@@ -47,4 +47,9 @@ public class Enemy : MonoBehaviour
 
         TakeDamage(impact);
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        TakeDamage(999f);
+    }
 }
